@@ -8,7 +8,7 @@ describe Wizard do
       step.add_field('age', label: 'Your name', type: 'number')
     end
     wizard.add_step('I want to know more about you') do |step|
-      step.add_field('food', label: 'Favorite food', type: 'option') do |field|
+      step.add_field('food', label: 'Favorite food', type: 'radio') do |field|
         field.add_choice(label: 'Fried rice', value: 'fried_rice')
         field.add_choice(label: 'Indomie', value: 'indomie')
       end
@@ -41,12 +41,12 @@ describe Wizard do
   end
 
   it 'should define current step' do
-    wizard.current = 0
+    wizard.current_index = 0
     expect(wizard.current_step.description).to eq('General information')
     expect(wizard.current_step.fields[0].id).to eq('name')
     expect(wizard.current_step.fields[1].id).to eq('age')
 
-    wizard.current = 1
+    wizard.current_index = 1
     expect(wizard.current_step.description).to eq('I want to know more about you')
     expect(wizard.current_step.fields.first.id).to eq('food')
 
@@ -58,14 +58,14 @@ describe Wizard do
   end
 
   it 'should be fill input' do
-    wizard.current = 0
+    wizard.current_index = 0
     wizard.fill('name', 'Randall')
     expect(wizard.current_step.fields[0].value).to eq('Randall')
     wizard.save
   end
 
   it 'should be save to storage' do
-    wizard_custom.current = 0
+    wizard_custom.current_index = 0
     wizard_custom.fill('name', 'Randall')
     wizard_custom.save
 

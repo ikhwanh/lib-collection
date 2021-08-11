@@ -1,13 +1,9 @@
 class Wizard
-  attr_accessor :current, :steps, :storage
+  attr_accessor :current_index, :steps, :storage
 
   def initialize(opts = {})
-    @current = opts[:current] || 0
-    @storage = if opts[:storage] == 'session'
-                 SessionStorage.new
-               else
-                 opts[:storage] || AbstractStorage.new
-               end
+    @current_index = opts[:current] || 0
+    @storage = opts[:storage] || AbstractStorage.new
     @steps = []
   end
 
@@ -18,7 +14,7 @@ class Wizard
     @steps << step
   end
 
-  def current_step(index = current)
+  def current_step(index = current_index)
     steps[index]
   end
 
@@ -41,7 +37,7 @@ class Wizard
   end
 
   def last_step?
-    current == steps.length - 1
+    current_index == steps.length - 1
   end
 
   class AbstractStorage
@@ -55,12 +51,18 @@ class Wizard
   end
 
   class SessionStorage < AbstractStorage
+    attr_accessor :session
+
+    def initialize(session)
+      @session = session
+    end
+
     def put(key, value)
-      session[key] = value
+      session[key.to_sym] = value
     end
 
     def pull(key)
-      session[key]
+      session[key.to_sym]
     end
   end
 
@@ -107,7 +109,7 @@ class Wizard
     def add_field(id, opts = nil)
       field = Field.new(id, opts || {})
       yield field if block_given?
-      field.value = storage.pull(field.id.to_sym)
+      field.value = storage.pull(field.id)
       @fields << field
     end
   end
