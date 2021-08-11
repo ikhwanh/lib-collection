@@ -31,6 +31,10 @@ describe Wizard do
       def pull(key)
         @database[key.to_sym]
       end
+
+      def remove(key)
+        @database[key.to_sym] = ''
+      end
     end
 
     wizard = Wizard.new(storage: CustomStorage.new)
@@ -71,5 +75,10 @@ describe Wizard do
 
     expect(wizard_custom.current_step.fields[0].value).to eq('Randall')
     expect(wizard_custom.storage.pull('name')).to eq('Randall')
+  end
+
+  it 'should remove all value' do
+    wizard_custom.flush
+    expect(wizard_custom.current_step.fields[0].value).to be_nil
   end
 end

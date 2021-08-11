@@ -32,6 +32,13 @@ class Wizard
     end
   end
 
+  def flush
+    fields.each do |field|
+      field.value = nil
+      storage.remove(field.id)
+    end
+  end
+
   def fields
     steps.map(&:fields).flatten
   end
@@ -46,6 +53,10 @@ class Wizard
     end
 
     def pull(_key)
+      nil
+    end
+
+    def remove(_key)
       nil
     end
   end
@@ -63,6 +74,10 @@ class Wizard
 
     def pull(key)
       session[key.to_sym]
+    end
+
+    def remove(key)
+      session.delete(key.to_sym)
     end
   end
 
