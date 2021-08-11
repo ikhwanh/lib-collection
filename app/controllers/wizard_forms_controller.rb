@@ -1,5 +1,3 @@
-require 'wizard'
-
 class WizardFormsController < ApplicationController
   before_action do
     @wizard = wizard_builder
@@ -12,8 +10,8 @@ class WizardFormsController < ApplicationController
   def new; end
 
   def create
-    ids = @wizard.current_step.fields.map(&:id)
-    ids.each { |id| @wizard.fill(id, params[id.to_sym]) }
+    input_names = @wizard.current_step.fields.map(&:id)
+    input_names.each { |input_name| @wizard.fill(input_name, params[input_name.to_sym]) }
     @wizard.save
 
     if @wizard.last_step?
