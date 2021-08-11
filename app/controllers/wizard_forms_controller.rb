@@ -21,6 +21,11 @@ class WizardFormsController < ApplicationController
     end
   end
 
+  def flush
+    @wizard.flush
+    redirect_to action: :index
+  end
+
   private
 
   def wizard_builder
