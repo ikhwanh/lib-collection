@@ -22,14 +22,14 @@ class WizardFormsController < ApplicationController
   end
 
   def flush
-    @wizard.flush
+    @wizard.storage.remove_all
     redirect_to action: :index
   end
 
   private
 
   def wizard_builder
-    wizard = Wizard.new(storage: Wizard::SessionStorage.new(session))
+    wizard = Wizard.new(storage: CookiesStorage.new(cookies))
     wizard.add_step('Identity') do |step|
       step.add_field('name', label: 'Name', type: 'text', required: true)
       step.add_field('age', label: 'Age', type: 'number', required: true)

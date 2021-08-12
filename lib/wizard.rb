@@ -59,6 +59,10 @@ class Wizard
     def remove(_key)
       nil
     end
+
+    def remove_all
+      nil
+    end
   end
 
   class SessionStorage < AbstractStorage
