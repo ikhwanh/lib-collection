@@ -75,4 +75,5 @@ Rails.application.configure do
   # config.action_cable.disable_request_forgery_protection = true
 
   config.eager_load_paths << Rails.root.join('lib')
+  LibCollection::Application.config.session_store :cookie_store, key: 'development_key', expire_after: 1.day
 end
