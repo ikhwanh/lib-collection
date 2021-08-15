@@ -6,7 +6,7 @@ class ApplicationMailer < ActionMailer::Base
   prepend_view_path 'app/views/mailers'
 
   def proxy_url(_original_url)
-    m_url(r: 'http://www.google.com')
+    m_url(r: 'http://www.google.com', key: 'test')
   end
 
   def tracking_img_url

@@ -4,7 +4,7 @@ class TrackingController < ApplicationController
   def img
     return render(file: Rails.root.join('public', '403.html'), status: 403) if params[:key].blank?
 
-    puts "User opening an email, the key is #{params[:key]}"
+    puts "User is opening an email, the key is #{params[:key]}"
 
     send_file(
       Rails.root.join('app', 'assets', 'images', 'tracking_pixel.png').to_s,
@@ -15,6 +15,8 @@ class TrackingController < ApplicationController
 
   def redirector
     return render(file: Rails.root.join('public', '403.html'), status: 403) if params[:r].blank?
+
+    puts "User is clicking an email, the key is #{params[:key]}"
 
     redirect_to params[:r]
   end
