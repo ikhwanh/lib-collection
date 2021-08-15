@@ -46,15 +46,19 @@ describe Wizard do
 
   it 'should define current step' do
     wizard.current_index = 0
-    expect(wizard.current_step.description).to eq('General information')
+    expect(wizard.current_step.label).to eq('General information')
     expect(wizard.current_step.fields[0].id).to eq('name')
     expect(wizard.current_step.fields[1].id).to eq('age')
 
     wizard.current_index = 1
-    expect(wizard.current_step.description).to eq('I want to know more about you')
+    expect(wizard.current_step.label).to eq('I want to know more about you')
     expect(wizard.current_step.fields.first.id).to eq('food')
 
     expect(wizard.last_step?).to be true
+  end
+
+  it 'should has attribute' do
+    expect(wizard_custom.attribute).to eq({ name: 'Rick' })
   end
 
   it 'should can implement your own storage' do
@@ -62,23 +66,20 @@ describe Wizard do
   end
 
   it 'should be fill input' do
-    wizard.current_index = 0
     wizard.fill('name', 'Randall')
-    expect(wizard.current_step.fields[0].value).to eq('Randall')
-    wizard.save
+    expect(wizard.attribute[:name]).to eq('Randall')
   end
 
   it 'should be save to storage' do
-    wizard_custom.current_index = 0
     wizard_custom.fill('name', 'Randall')
     wizard_custom.save
 
-    expect(wizard_custom.current_step.fields[0].value).to eq('Randall')
+    expect(wizard_custom.attribute[:name]).to eq('Randall')
     expect(wizard_custom.storage.pull('name')).to eq('Randall')
   end
 
   it 'should remove all value' do
     wizard_custom.flush
-    expect(wizard_custom.current_step.fields[0].value).to be_nil
+    expect(wizard_custom.attribute[:name]).to be_nil
   end
 end

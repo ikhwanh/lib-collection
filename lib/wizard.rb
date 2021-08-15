@@ -1,14 +1,19 @@
 class Wizard
-  attr_accessor :current_index, :steps, :storage
+  attr_accessor :current_index, :steps, :storage, :attribute
 
   def initialize(opts = {})
     @current_index = opts[:current] || 0
     @storage = opts[:storage] || AbstractStorage.new
     @steps = []
+    @attribute = {}
   end
 
-  def add_step(description)
-    step = Step.new(description, storage)
+  def create_step(label)
+    Step.new(label: label, wizard: self)
+  end
+
+  def add_step(label)
+    step = create_step(label)
     yield step if block_given?
 
     @steps << step
@@ -18,24 +23,18 @@ class Wizard
     steps[index]
   end
 
-  def save(step = current_step)
-    step.fields.each do |field|
-      storage.put(field.id, field.value)
-    end
+  def save
+    attribute.keys.each { |key| storage.put(key, attribute[key]) }
   end
 
-  def fill(field_id, value, step = current_step)
-    if (field_index = step.fields.find_index { |field| field.id.to_sym == field_id.to_sym })
-      step.fields[field_index].value = value
-    else
-      raise "There is no field with id=#{field.id}"
-    end
+  def fill(field_id, field_value)
+    @attribute[field_id.to_sym] = field_value
   end
 
   def flush
-    fields.each do |field|
-      field.value = nil
-      storage.remove(field.id)
+    attribute.keys.each do |key|
+      attribute[key] = nil
+      storage.remove(key)
     end
   end
 
@@ -116,19 +115,20 @@ class Wizard
   end
 
   class Step
-    attr_reader :storage
-    attr_accessor :description, :fields
+    attr_reader :wizard
+    attr_accessor :label, :fields
 
-    def initialize(description = '', storage)
-      @description = description
-      @storage = storage
+    def initialize(opts)
+      @label = opts[:label] || ''
+      @wizard = opts[:wizard]
       @fields = []
     end
 
     def add_field(id, opts = nil)
       field = Field.new(id, opts || {})
       yield field if block_given?
-      field.value = storage.pull(field.id)
+      field.value = wizard.storage.pull(field.id)
+      wizard.attribute[field.id.to_sym] = field.value
       @fields << field
     end
   end
