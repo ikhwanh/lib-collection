@@ -12,11 +12,17 @@ class Wizard
     Step.new(label: label, wizard: self)
   end
 
-  def add_step(label)
-    step = create_step(label)
-    yield step if block_given?
+  def add_step(label, if_attribute = {})
+    if if_attribute.nil? || is_pair_equal(if_attribute)
+      step = create_step(label)
+      yield step if block_given?
 
-    @steps << step
+      @steps << step
+    end
+  end
+
+  def is_pair_equal(hash)
+    attribute.select { |k, _v| hash.has_key?(k) } == hash
   end
 
   def current_step(index = current_index)
@@ -127,7 +133,7 @@ class Wizard
     def add_field(id, opts = nil)
       field = Field.new(id, opts || {})
       yield field if block_given?
-      field.value = wizard.storage.pull(field.id)
+      field.value ||= wizard.storage.pull(field.id)
       wizard.attribute[field.id.to_sym] = field.value
       @fields << field
     end

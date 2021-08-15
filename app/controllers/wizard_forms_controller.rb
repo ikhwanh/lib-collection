@@ -41,6 +41,20 @@ class WizardFormsController < ApplicationController
         field.add_choice(label: 'Meatball', value: 'meatball')
       end
     end
+    wizard.add_step('', { food: 'fried_rice' }) do |step|
+      step.add_field('fried_rice', label: 'Which fried rice do you like the most?', type: 'radio') do |field|
+        field.add_choice(label: 'Mutton fried rice', value: 'mutton')
+        field.add_choice(label: 'Cheese fried rice', value: 'cheese')
+        field.add_choice(label: 'Spicy fried rice', value: 'spicy')
+      end
+    end
+    wizard.add_step('', { food: 'meatball' }) do |step|
+      step.add_field('meatball', label: 'Which meatball do you choose?', type: 'radio') do |field|
+        field.add_choice(label: 'Fried meatball', value: 'fried')
+        field.add_choice(label: 'Grilled meatball', value: 'grilled')
+        field.add_choice(label: 'Normal meatball', value: 'normal')
+      end
+    end
     wizard.add_step('') do |step|
       step.add_field('drink', label: 'Which drink do you like the most?', type: 'radio') do |field|
         field.add_choice(label: 'Apel juice', value: 'apel_juice')

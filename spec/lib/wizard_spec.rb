@@ -82,4 +82,21 @@ describe Wizard do
     wizard_custom.flush
     expect(wizard_custom.attribute[:name]).to be_nil
   end
+
+  it 'should add step with condition' do
+    wizard_custom.add_step('', { name: 'Rick' }) do |step|
+      step.add_field('say', label: 'Hello Rick! How are you?', type: 'radio', value: 'best') do |field|
+        field.add_choice(label: 'Best!', value: 'best')
+        field.add_choice(label: 'I am doing good!', value: 'good')
+      end
+    end
+
+    wizard_custom.add_step('', { say: 'good' }) do |step|
+      step.add_field('say_back', label: 'I am good too!', type: 'hidden', value: 'good_too')
+    end
+
+    expect(wizard_custom.attribute[:say]).to eq('best')
+    expect(wizard_custom.attribute[:say_back]).to be_nil
+    expect(wizard_custom.steps.length).to eq(2)
+  end
 end
